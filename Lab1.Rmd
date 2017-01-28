@@ -73,7 +73,6 @@ pct.grad <- (sum(ceo.df$grad) / length(ceo.df$grad))
 
 ```{r, include = FALSE}
 sub <- subset(ceo.df, ceo.df$college == 0 & ceo.df$grad == 1)
->>>>>>> upstream/master
 ```
 
 **Note: Should we mention there are `r length(sub$salary)` CEOs with an advanced degree but no college degree? (Can that be correct?)**
@@ -85,7 +84,6 @@ Summary Statistics for Years with Company
 summary(comten)
 ```
 
-<<<<<<< HEAD
 Variance of Years with Company
 ```{r}
 var(comten)
