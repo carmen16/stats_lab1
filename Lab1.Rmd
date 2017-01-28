@@ -80,7 +80,7 @@ sub <- subset(ceo.df, ceo.df$college == 0 & ceo.df$grad == 1)
 **Note: Should we mention there are `r length(sub$salary)` CEOs with an advanced degree but no college degree? (Can that be correct?)**
 
 ### Years With Company
-Summary Statistics for Years with Company
+The Median (`r round(median(ceo.df$comten), 1)`) and Mean (`r round(mean(ceo.df$comten), 1)`) both indicate that in general CEOs have been with their companies around 21 years. However, the data is highly variable with a min of `r round(min(ceo.df$comten), 1)` and a max of `r round(max(ceo.df$comten), 1)`.
 ```{r}
 summary(ceo.df$comten)
 ```
@@ -90,17 +90,19 @@ Variance of Years with Company
 var(ceo.df$comten)
 ```
 
-Standard Deviation of Years with Company
+The standard deviation for years with the company is ~`r round(sd(ceo.df$comten), 1)`, which is large but unsurprising given the variablity of the dataset.
 ```{r}
 sd(ceo.df$comten)
 ```
 
 Histogram of Years with Company
 ```{r}
-hist(ceo.df$comten, main="Years with Company", xlab = "Years")
+hist(ceo.df$comten,main="Years with Company",xlab = "Years")
 ```
 
 ### Years as CEO
+The years as CEO variable exhibits a large right skew with a median of around `r round(median(ceo.df$comten), 1)`. This is not entirely suprising given CEOs tend to be established in their careers and thus older, which may explain while things tail off. We must also wonder if there is a large turnover in the first few years of a CEOs tenure as most CEOs are between 0-5 years in the position.
+
 Summary Statistics for Years as CEO
 ```{r}
 summary(ceo.df$ceoten)
@@ -118,10 +120,12 @@ sd(ceo.df$ceoten)
 
 Histogram of Years as CEO
 ```{r}
-hist(ceo.df$ceoten, main="Years as CEO", xlab = "Years")
+hist(ceo.df$ceoten,main="Years as CEO",xlab = "Years",breaks=20)
 ```
 
 ### Profits
+Companies in the sample tend to make a profit as shown by the median profit of `r round(mean(ceo.df$comten), 1)`. The mean is significanlty higher than the median driven by a notable outlier of `r round(max(ceo.df$comten), 1)`
+
 Summary Statistics for Profits
 ```{r}
 summary(ceo.df$profits)
@@ -139,11 +143,12 @@ sd(ceo.df$profits)
 
 Histogram of Profits
 ```{r}
-hist(ceo.df$profits, main="1990 Profits",
-     xlab = "millions", breaks = 100)
+hist(ceo.df$profits,main="1990 Profits",xlab = "millions",breaks = 100)
 ```
 
 ### Market Value
+Unsurprisingly, the Market Value for companies has a right skew. The Min `r round(min(ceo.df$mktval), 1)` looks to be in error as Market Values should range from 0 to infinity.
+
 Summary Statistics for Market Value
 ```{r}
 summary(ceo.df$mktval)
@@ -165,8 +170,8 @@ hist(ceo.df$mktval, main="Market Value at the End of 1990",
      xlab = "millions", breaks = 100)
 ```
 
-# Key Bivariate Relationships
 
+# Key Bivariate Relationships
 We will now analyze some key bivariate relationships. Below is a scatterplot matrix of the variables in this dataset.
 
 ```{r}
@@ -177,7 +182,6 @@ scatterplotMatrix(ceo.df)
 ### Profits & Market Value
 
 These are our two measures of company performance, so we confirm they are positively correlated.
-
 ```{r}
 cor(ceo.df$profits, ceo.df$mktval)
 ```
@@ -216,4 +220,3 @@ Aaa
 Aaa
 ```{r}
 ```
-
