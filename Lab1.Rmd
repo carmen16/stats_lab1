@@ -15,21 +15,18 @@ knitr::opts_chunk$set(echo = TRUE)
 Aaa
 
 ```{r}
-```
-
-# Univariate Analysis of Key Variables
-
-In this section we will perform a univariate analysis of each of the variables in this dataset.
-
-```{r}
-setwd("~/Desktop/MIDS/Statistics_for_Data_Science/stats_lab1")
+setwd("~/Desktop/MIDS/Statistics/stats_lab1")
 ceosal <- load("ceo_w203.RData", ceo.env <- new.env())
 ceo.df <- ceo.env[["CEO"]]
 ```
 
+# Univariate Analysis of Key Variables
+
+In the following section we will perform a univariate analysis of each of the variables in this dataset. Salary is our outcome variable, and profits and mktval are the key measures of market performance.
+
 ### Salary
 
-The CEO salary distribution is strongly skewed right.
+CEO salary distribution is strongly skewed right.
 
 ```{r}
 hist(ceo.df$salary, main = "Histogram of CEO Salary in 1990",
@@ -37,7 +34,7 @@ hist(ceo.df$salary, main = "Histogram of CEO Salary in 1990",
 axis(1, at = seq(0, 6000, by = 1000))
 ```
 
-Median salary is $`r median(ceo.df$salary)` thousand, and there is one extreme outlier at $`r max(ceo.df$salary)` thousand.
+Median salary is $`r median(ceo.df$salary)` thousand, and there is one extreme outlier at $`r round(max(ceo.df$salary) / 1000, 1)` million.
 
 ```{r}
 summary(ceo.df$salary)
