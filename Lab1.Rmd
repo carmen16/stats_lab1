@@ -319,8 +319,8 @@ Aaa
 # Variable Coding Issues and Missing Values
 
 *Mention 2 CEOs with advanced degree but not college degree*  
-*Mention 1 CEO with CEO tenure > company tenure*
-*Mention Companies with market cap less than 0*
+*Mention 1 CEO with CEO tenure > company tenure*  
+*Mention Companies with market cap less than 0*  
 ```{r}
 ```
 
