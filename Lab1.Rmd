@@ -5,6 +5,7 @@ date: "January 29, 2016"
 output:
   pdf_document: default
 ---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -20,6 +21,7 @@ ceo.df <- ceo.env[["CEO"]]
 ```
 
 # Univariate Analysis of Key Variables
+
 In the following section we will perform a univariate analysis of each of the variables in this dataset. Salary is our outcome variable, and profits and mktval are the key measures of market performance.
 
 ### Salary
@@ -46,12 +48,12 @@ hist(ceo.df$age, breaks = 14, main = "Histogram of CEO Age", xlab = "Age")
 summary(ceo.df$age)
 ```
 
-The variance is large:
+The variance of Age is large:
 ```{r}
 var(ceo.df$age)
 ```
 
-### College
+### College Degree
 
 College is a dummy variable that takes a value of 1 if the CEO is a college graduate and 0 otherwise.
 
@@ -61,7 +63,7 @@ pct.college <- (sum(ceo.df$college) / length(ceo.df$college))
 
 `r round(pct.college * 100, 1)`% of the CEOs in this dataset are college graduates.
 
-### Grad
+### Graduate Degree
 
 Grad is a dummy variable that takes a value of 1 if the CEO holds an advanced degree and 0 otherwise.
 
@@ -165,12 +167,29 @@ hist(ceo.df$mktval, main="Market Value at the End of 1990",
 
 # Key Bivariate Relationships
 
-Aaa
+We will now analyze some key bivariate relationships. Below is a scatterplot matrix of the variables in this dataset.
 
-### Relationship 1
-
-Aaa
 ```{r}
+library(car)
+scatterplotMatrix(ceo.df)
+```
+
+### Profits & Market Value
+
+These are our two measures of company performance, so we confirm they are positively correlated.
+
+```{r}
+cor(ceo.df$profits, ceo.df$mktval)
+```
+
+For the most part, as profits increase, so does market value.
+
+```{r}
+plot(ceo.df$profits, ceo.df$mktval,
+     main = "Profits vs. Market Value in 1990",
+     xlab = "Market Value ($ millions)",
+     ylab = "Profits ($ millions)")
+abline(lm(ceo.df$mktval ~ ceo.df$profits), col = "red")
 ```
 
 # Possible Secondary Variables
@@ -197,3 +216,4 @@ Aaa
 Aaa
 ```{r}
 ```
+
