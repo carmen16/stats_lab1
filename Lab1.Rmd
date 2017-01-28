@@ -74,7 +74,7 @@ pct.grad <- (sum(ceo.df$grad) / length(ceo.df$grad))
 `r round(pct.grad * 100, 1)`% of the CEOs in this dataset hold advanced degrees.
 
 ### Years With Company
-The Median (r round(median(ceo.df$comten), 1)) and Mean (r round(mean(ceo.df$comten), 1)) both indicate that in general CEOs have been with their companies around 21 years. However, the data is highly variable with a min of r round(min(ceo.df$comten), 1) and a max of r round(max(ceo.df$comten), 1).
+The Median (`r round(median(ceo.df$comten), 1)`) and Mean (`r round(mean(ceo.df$comten), 1)`) both indicate that in general CEOs have been with their companies around 21 years. However, the data is highly variable with a min of `r round(min(ceo.df$comten), 1)` and a max of `r round(max(ceo.df$comten), 1)`.
 ```{r}
 summary(ceo.df$comten)
 ```
@@ -95,7 +95,7 @@ hist(ceo.df$comten, main="Years with Company", xlab = "Years")
 ```
 
 ### Years as CEO
-The years as CEO variable exhibits a large right skew with a median of around r round(median(ceo.df$comten), 1). This is not entirely suprising given CEOs tend to be established in their careers and thus older, which may explain while things tail off. We must also wonder if there is a large turnover in the first few years of a CEOs tenure as most CEOs are between 0-5 years in the position.
+The years as CEO variable exhibits a large right skew with a median of around `r round(median(ceo.df$comten), 1)`. This is not entirely suprising given CEOs tend to be established in their careers and thus older, which may explain while things tail off. We must also wonder if there is a large turnover in the first few years of a CEOs tenure as most CEOs are between 0-5 years in the position.
 
 Summary Statistics for Years as CEO
 ```{r}
@@ -118,12 +118,13 @@ hist(ceo.df$ceoten, main="Years as CEO", xlab = "Years")
 ```
 
 ### Profits
-Companies in the sample tend to make a profit as shown by the median profit of r round(mean(ceo.df$comten), 1). The mean is significanlty higher than the median driven by a notable outlier of r round(max(ceo.df$comten), 1)
+Companies in the sample tend to make a profit as shown by the median profit of `r round(mean(ceo.df$comten), 1)`. The mean is significanlty higher than the median driven by a notable outlier of `r round(max(ceo.df$comten), 1)`. While profits can be either positibe or negative, we found `r sum(ceo.df$profits == -1)` datapoints that are equal to negtive 1. Given this same value is found for the same CEOs in the market value variable, we beleive this is a bad value.
 
 Summary Statistics for Profits
 ```{r}
 summary(ceo.df$profits)
 ```
+
 
 Variance of Profits
 ```{r}
@@ -143,7 +144,7 @@ hist(ceo.df$profits, main="1990 Profits",
 
 ### Market Value
 
-Unsurprisingly, the Market Value for companies has a right skew. The Min r round(min(ceo.df$mktval), 1) looks to be in error as Market Values should range from 0 to infinity.
+Unsurprisingly, the Market Value for companies has a right skew. The Min `r round(min(ceo.df$mktval), 1)` looks to be in error as Market Values should range from 0 to infinity. We found `r sum(ceo.df$mktval == -1)` datapoints that are equal to negtive 1, which appears to be a bad value.
 
 Summary Statistics for Market Value
 ```{r}
@@ -194,7 +195,7 @@ abline(lm(ceo.df$mktval ~ ceo.df$profits), col = "red")
 ```
 
 ### Profits & CEO Salary
-The relationship between Salary and Profits doesn't have a strong linear relationship as demonstrated by the low correlation.
+Salary and Profits don't have a strong linear relationship as demonstrated by the low correlation.
 ```{r}
 cor(ceo.df$salary, ceo.df$profits)
 ```
@@ -208,7 +209,7 @@ plot(ceo.df$salary, ceo.df$profits,
      ylab = "Profits ($ millions)")
 ```
 
-However, after performing a logorithmic transformation on the profits variable, the relationship between the two variables shows more a linear relationship.   
+However, after performing a logorithmic transformation on the profits variable, the variables show more a linear relationship.   
 ```{r}
 plot(ceo.df$salary, log(ceo.df$profits),
      main = "Salary vs. Profits in 1990",
@@ -320,7 +321,7 @@ Aaa
 
 *Mention 2 CEOs with advanced degree but not college degree*  
 *Mention 1 CEO with CEO tenure > company tenure*  
-*Mention Companies with market cap less than 0*  
+*Mention 5 Companies with market cap equal to -1*  
 ```{r}
 ```
 
