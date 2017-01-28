@@ -5,9 +5,9 @@ date: "January 29, 2016"
 output:
   pdf_document: default
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+attach(CEO)
 ```
 
 # Introduction
@@ -18,13 +18,88 @@ Aaa
 ```
 
 # Univariate Analysis of Key Variables
-
-Aaa
-
-### Variable 1
-
-Aaa
+### Years With Company
+Summary Statistics for Years with Company
 ```{r}
+summary(comten)
+```
+
+Variance of Years with Company
+```{r}
+var(comten)
+```
+
+Standard Deviation of Years with Company
+```{r}
+sd(comten)
+```
+
+Histogram of Years with Company
+```{r}
+hist(comten,main="Years with Company",xlab = "Years")
+```
+
+### Years as CEO
+Summary Statistics for Years as CEO
+```{r}
+summary(ceoten)
+```
+
+Variance of Years as CEO
+```{r}
+var(ceoten)
+```
+
+Standard Deviation of Years as CEO
+```{r}
+sd(ceoten)
+```
+
+Histogram of Years as CEO
+```{r}
+hist(ceoten,main="Years as CEO",xlab = "Years")
+```
+
+### Profits
+Summary Statistics for Profits
+```{r}
+summary(profits)
+```
+
+Variance of Profits
+```{r}
+var(profits)
+```
+
+Standard Deviation of Profits
+```{r}
+sd(profits)
+```
+
+Histogram of Profits
+```{r}
+hist(profits,main="1990 Profits",xlab = "millions",breaks = 100)
+```
+
+### Market Value
+Summary Statistics for Market Value
+```{r}
+summary(mktval)
+```
+
+Variance of Market Value
+```{r}
+var(mktval)
+```
+
+Standard Deviation of Market Value
+```{r}
+sd(mktval)
+```
+
+Histogram of Market Value
+```{r}
+hist(mktval,main="Market Value at the End of 1990",xlab = "millions",breaks = 100)
 ```
 
 
