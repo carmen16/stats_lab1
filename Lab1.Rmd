@@ -196,9 +196,52 @@ plot(ceo.df$profits, ceo.df$mktval,
 abline(lm(ceo.df$mktval ~ ceo.df$profits), col = "red")
 ```
 
+### Profits & CEO Salary
+The relationship between Salary and Profits doesn't have a strong linear relationship as demonstrated by the low correlation.
+```{r}
+cor(ceo.df$salary, ceo.df$profits)
+```
+
+
+When profits are between -500 million dollars and 500 million dollars and salary is less than 2 million dollars, there seems to be a slight linear relationship. However, outlier CEOs, who significantly outperformed their peers by making significant profits per dollar earned, skew the linearity of the data.
+```{r}
+plot(ceo.df$salary, ceo.df$profits,
+     main = "Salary vs. Profits in 1990",
+     xlab = "Salary ($ thousands)",
+     ylab = "Profits ($ millions)")
+```
+
+However, after performing a logorithmic transformation on the profits variable, the relationship between the two variables shows more a linear relationship.   
+```{r}
+plot(ceo.df$salary, log(ceo.df$profits),
+     main = "Salary vs. Profits in 1990",
+     xlab = "Salary ($ thousands)",
+     ylab = "Log of Profits ($ millions)")
+```
+
+### Market Value & CEO Salary
+Like the relationship between salary and profits, salary and market value also don't have a strong linear relationship, which can be seen in the correlation below. Given the high correlation between profits and market value, it is thus unsurprising that salary and market value are also not highly correlated.
+```{r}
+cor(ceo.df$salary, ceo.df$mktval)
+```
+
+Similar to salary and profits, there appears to be some linearity when profits and market value are low, but as market value rises the linear reltionship weakens. 
+```{r}
+plot(ceo.df$salary, ceo.df$mktval,
+     main = "Salary vs. Market Value in 1990",
+     xlab = "Salary ($ thousands)",
+     ylab = "Market Value ($ millions)")
+```
+
+Similar to the profit variable, a logorthmic transformation on the market value variable demonstrates a more linear relationship between the two variables.
+```{r}
+plot(ceo.df$salary, log(ceo.df$mktval),
+     main = "Salary vs. Market Value in 1990",
+     xlab = "Salary ($ thousands)",
+     ylab = "Market Value ($ millions)")
+```
 # Possible Secondary Variables
 
-Aaa
 ```{r}
 ```
 
