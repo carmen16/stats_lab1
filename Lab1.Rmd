@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-Aaa
+Salary is our outcome variable, and profits and mktval are the key measures of market performance.
 
 ```{r}
 setwd("~/Desktop/MIDS/Statistics/stats_lab1")
@@ -22,7 +22,7 @@ ceo.df <- ceo.env[["CEO"]]
 
 # Univariate Analysis of Key Variables
 
-In the following section we will perform a univariate analysis of each of the variables in this dataset. Salary is our outcome variable, and profits and mktval are the key measures of market performance.
+In this section we will analyze each variable individually.
 
 ### Salary
 
@@ -71,16 +71,10 @@ Grad is a dummy variable that takes a value of 1 if the CEO holds an advanced de
 pct.grad <- (sum(ceo.df$grad) / length(ceo.df$grad))
 ```
 
-`r round(pct.grad * 100, 1)`% of the CEOs in this dataset are college graduates.
-
-```{r, include = FALSE}
-sub <- subset(ceo.df, ceo.df$college == 0 & ceo.df$grad == 1)
-```
-
-**Note: Should we mention there are `r length(sub$salary)` CEOs with an advanced degree but no college degree? (Can that be correct?)**
+`r round(pct.grad * 100, 1)`% of the CEOs in this dataset hold advanced degrees.
 
 ### Years With Company
-The Median (`r round(median(ceo.df$comten), 1)`) and Mean (`r round(mean(ceo.df$comten), 1)`) both indicate that in general CEOs have been with their companies around 21 years. However, the data is highly variable with a min of `r round(min(ceo.df$comten), 1)` and a max of `r round(max(ceo.df$comten), 1)`.
+Summary Statistics for Years with Company
 ```{r}
 summary(ceo.df$comten)
 ```
@@ -90,19 +84,17 @@ Variance of Years with Company
 var(ceo.df$comten)
 ```
 
-The standard deviation for years with the company is ~`r round(sd(ceo.df$comten), 1)`, which is large but unsurprising given the variablity of the dataset.
+Standard Deviation of Years with Company
 ```{r}
 sd(ceo.df$comten)
 ```
 
 Histogram of Years with Company
 ```{r}
-hist(ceo.df$comten,main="Years with Company",xlab = "Years")
+hist(ceo.df$comten, main="Years with Company", xlab = "Years")
 ```
 
 ### Years as CEO
-The years as CEO variable exhibits a large right skew with a median of around `r round(median(ceo.df$comten), 1)`. This is not entirely suprising given CEOs tend to be established in their careers and thus older, which may explain while things tail off. We must also wonder if there is a large turnover in the first few years of a CEOs tenure as most CEOs are between 0-5 years in the position.
-
 Summary Statistics for Years as CEO
 ```{r}
 summary(ceo.df$ceoten)
@@ -120,12 +112,10 @@ sd(ceo.df$ceoten)
 
 Histogram of Years as CEO
 ```{r}
-hist(ceo.df$ceoten,main="Years as CEO",xlab = "Years",breaks=20)
+hist(ceo.df$ceoten, main="Years as CEO", xlab = "Years")
 ```
 
 ### Profits
-Companies in the sample tend to make a profit as shown by the median profit of `r round(mean(ceo.df$comten), 1)`. The mean is significanlty higher than the median driven by a notable outlier of `r round(max(ceo.df$comten), 1)`
-
 Summary Statistics for Profits
 ```{r}
 summary(ceo.df$profits)
@@ -143,12 +133,11 @@ sd(ceo.df$profits)
 
 Histogram of Profits
 ```{r}
-hist(ceo.df$profits,main="1990 Profits",xlab = "millions",breaks = 100)
+hist(ceo.df$profits, main="1990 Profits",
+     xlab = "millions", breaks = 100)
 ```
 
 ### Market Value
-Unsurprisingly, the Market Value for companies has a right skew. The Min `r round(min(ceo.df$mktval), 1)` looks to be in error as Market Values should range from 0 to infinity.
-
 Summary Statistics for Market Value
 ```{r}
 summary(ceo.df$mktval)
@@ -170,18 +159,19 @@ hist(ceo.df$mktval, main="Market Value at the End of 1990",
      xlab = "millions", breaks = 100)
 ```
 
-
 # Key Bivariate Relationships
-We will now analyze some key bivariate relationships. Below is a scatterplot matrix of the variables in this dataset.
+
+In this section we analyze some key bivariate relationships. Below is a scatterplot matrix of these key variables.
 
 ```{r}
 library(car)
-scatterplotMatrix(ceo.df)
+scatterplotMatrix(~ salary + profits + mktval, data = ceo.df)
 ```
 
 ### Profits & Market Value
 
 These are our two measures of company performance, so we confirm they are positively correlated.
+
 ```{r}
 cor(ceo.df$profits, ceo.df$mktval)
 ```
@@ -198,9 +188,78 @@ abline(lm(ceo.df$mktval ~ ceo.df$profits), col = "red")
 
 # Possible Secondary Variables
 
-Aaa
+Some secondary variables that may affect salary are the CEO's age, tenure, and education level. Below is a scatterplot of salary on age and tenure variables. Since education level is split into two dummy variables, we do not find a scatterplot of it to be useful.
+
 ```{r}
+scatterplotMatrix(~ salary + age + comten + ceoten, data = ceo.df)
 ```
+
+### Salary vs. Age
+
+Age has a slight positive relationship with CEO salary, likely because older CEOs have more work experience. However, with a correlation of only `r cor(ceo.df$salary, ceo.df$age)`, age is not a key variable in this analysis.
+
+```{r}
+plot(ceo.df$age, ceo.df$salary,
+     main = "Salary vs. Age",
+     xlab = "Age",
+     ylab = "Salary ($ thousands)")
+abline(lm(ceo.df$salary ~ ceo.df$age), col = "red")
+```
+
+### Salary vs. Education
+
+We assign each CEO to one of three education levels: Advanced Degree, College Graduate, or Less than College. There are 2 cases of CEOs with an advanced degree but no college degree, and these are assigned to the "Advanced Degree" level.
+
+```{r}
+educLevelFunc <- function(college, grad) {
+  
+    if (grad == 1) {retStr = "Advanced Degree"}
+    else if (college == 1) {retStr = "College Graduate"}
+    else {retStr = "Less than College"}
+  
+    return(retStr)
+}
+
+ceo.df$educLevel <- mapply(educLevelFunc, ceo.df$college, ceo.df$grad)
+table(ceo.df$educLevel)
+```
+
+Following is a boxplot of CEO salary by education level. The distribution category for the "less than college" category is not reliable since it only has 5 data points. However, we can see that CEOs with an advanced degree have approximately the same salary distribution as CEOs with only a college degree.
+
+```{r}
+boxplot(salary ~ educLevel, data=ceo.df,
+     main = "Boxplot of Salary by Education Level",
+     ylab = "Salary ($ thousands)")
+```
+
+### Salary vs. Tenure
+
+We have two tenure variables: CEO tenure and company tenure. These variables are closely related, since company tenure must rise whenever CEO tenure rises. Note that for CEOs who are hired from outside the company, CEO tenure and company tenure are the same.
+
+```{r}
+outside.ceo <- subset(ceo.df, ceo.df$ceoten == ceo.df$comten)
+pct.outside.ceo <- (length(outside.ceo$ceoten) / length(ceo.df$ceoten))
+```
+
+(*Note:* In this dataset, `r round(pct.outside.ceo * 100, 1)`% of CEOs are brought in from outside the company.)  
+
+As shown in the scatterplots below, CEO salary has essentially no relationship with the number of years the CEO has been with the company, and only a slight positive relationship with the number of years as CEO.
+
+```{r}
+cor(ceo.df$salary, ceo.df$comten)
+plot(ceo.df$comten, ceo.df$salary,
+     main = "Salary vs. Years with the Company",
+     xlab = "Years with the Company",
+     ylab = "Salary ($ thousands)")
+abline(lm(ceo.df$salary ~ ceo.df$comten), col = "red")
+cor(ceo.df$salary, ceo.df$ceoten)
+plot(ceo.df$ceoten, ceo.df$salary,
+     main = "Salary vs. Years as CEO",
+     xlab = "Years as CEO",
+     ylab = "Salary ($ thousands)")
+abline(lm(ceo.df$salary ~ ceo.df$ceoten), col = "red")
+```
+
 
 # Potential Confounding Effects
 
@@ -211,7 +270,8 @@ Aaa
 
 # Variable Coding Issues and Missing Values
 
-Aaa
+*Mention 2 CEOs with advanced degree but not college degree*  
+*Mention 1 CEO with CEO tenure > company tenure*
 ```{r}
 ```
 
@@ -220,3 +280,4 @@ Aaa
 Aaa
 ```{r}
 ```
+
