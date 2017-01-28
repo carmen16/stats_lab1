@@ -7,7 +7,6 @@ output:
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-attach(CEO)
 ```
 
 # Introduction
@@ -15,15 +14,78 @@ attach(CEO)
 Aaa
 
 ```{r}
+setwd("~/Desktop/MIDS/Statistics/stats_lab1")
+ceosal <- load("ceo_w203.RData", ceo.env <- new.env())
+ceo.df <- ceo.env[["CEO"]]
 ```
 
 # Univariate Analysis of Key Variables
+In the following section we will perform a univariate analysis of each of the variables in this dataset. Salary is our outcome variable, and profits and mktval are the key measures of market performance.
+
+### Salary
+
+CEO salary distribution is strongly skewed right.
+
+```{r}
+hist(ceo.df$salary, main = "Histogram of CEO Salary in 1990",
+     xlab = "Salary in $ thousands", breaks = seq(0, 6000, by = 500))
+axis(1, at = seq(0, 6000, by = 1000))
+```
+
+Median salary is $`r median(ceo.df$salary)` thousand, and there is one extreme outlier at $`r round(max(ceo.df$salary) / 1000, 1)` million.
+
+```{r}
+summary(ceo.df$salary)
+```
+
+### Age
+
+CEO age peaks between 50 and 65 years old, but ranges all the way from `r min(ceo.df$age)` to `r max(ceo.df$age)`.
+```{r}
+hist(ceo.df$age, breaks = 14, main = "Histogram of CEO Age", xlab = "Age")
+summary(ceo.df$age)
+```
+
+The variance is large:
+```{r}
+var(ceo.df$age)
+```
+
+### College
+
+College is a dummy variable that takes a value of 1 if the CEO is a college graduate and 0 otherwise.
+
+```{r}
+pct.college <- (sum(ceo.df$college) / length(ceo.df$college))
+```
+
+`r round(pct.college * 100, 1)`% of the CEOs in this dataset are college graduates.
+
+### Grad
+
+Grad is a dummy variable that takes a value of 1 if the CEO holds an advanced degree and 0 otherwise.
+
+```{r}
+pct.grad <- (sum(ceo.df$grad) / length(ceo.df$grad))
+```
+
+`r round(pct.grad * 100, 1)`% of the CEOs in this dataset are college graduates.
+
+```{r, include = FALSE}
+sub <- subset(ceo.df, ceo.df$college == 0 & ceo.df$grad == 1)
+>>>>>>> upstream/master
+```
+
+**Note: Should we mention there are `r length(sub$salary)` CEOs with an advanced degree but no college degree? (Can that be correct?)**
+
+
 ### Years With Company
 Summary Statistics for Years with Company
 ```{r}
 summary(comten)
 ```
 
+<<<<<<< HEAD
 Variance of Years with Company
 ```{r}
 var(comten)
@@ -100,8 +162,6 @@ sd(mktval)
 Histogram of Market Value
 ```{r}
 hist(mktval,main="Market Value at the End of 1990",xlab = "millions",breaks = 100)
-```
-
 
 # Key Bivariate Relationships
 
@@ -137,4 +197,3 @@ Aaa
 Aaa
 ```{r}
 ```
-
