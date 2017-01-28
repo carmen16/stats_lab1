@@ -1,0 +1,119 @@
+---
+title: "Lab 1: Exploratory Analysis of CEO Salary Data"
+author: "Carmen Easterwood & Andrew Kabatznick"
+date: "January 29, 2016"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Aaa
+
+```{r}
+```
+
+# Univariate Analysis of Key Variables
+
+In this section we will perform a univariate analysis of each of the variables in this dataset.
+
+```{r}
+setwd("~/Desktop/MIDS/Statistics_for_Data_Science/stats_lab1")
+ceosal <- load("ceo_w203.RData", ceo.env <- new.env())
+ceo.df <- ceo.env[["CEO"]]
+```
+
+### Salary
+
+The CEO salary distribution is strongly skewed right.
+
+```{r}
+hist(ceo.df$salary, main = "Histogram of CEO Salary in 1990",
+     xlab = "Salary in $ thousands", breaks = seq(0, 6000, by = 500))
+axis(1, at = seq(0, 6000, by = 1000))
+```
+
+Median salary is $`r median(ceo.df$salary)` thousand, and there is one extreme outlier at $`r max(ceo.df$salary)` thousand.
+
+```{r}
+summary(ceo.df$salary)
+```
+
+### Age
+
+CEO age peaks between 50 and 65 years old, but ranges all the way from `r min(ceo.df$age)` to `r max(ceo.df$age)`.
+```{r}
+hist(ceo.df$age, breaks = 14, main = "Histogram of CEO Age", xlab = "Age")
+summary(ceo.df$age)
+```
+
+The variance is large:
+```{r}
+var(ceo.df$age)
+```
+
+### College
+
+College is a dummy variable that takes a value of 1 if the CEO is a college graduate and 0 otherwise.
+
+```{r}
+pct.college <- (sum(ceo.df$college) / length(ceo.df$college))
+```
+
+`r round(pct.college * 100, 1)`% of the CEOs in this dataset are college graduates.
+
+### Grad
+
+Grad is a dummy variable that takes a value of 1 if the CEO holds an advanced degree and 0 otherwise.
+
+```{r}
+pct.grad <- (sum(ceo.df$grad) / length(ceo.df$grad))
+```
+
+`r round(pct.grad * 100, 1)`% of the CEOs in this dataset are college graduates.
+
+```{r, include = FALSE}
+sub <- subset(ceo.df, ceo.df$college == 0 & ceo.df$grad == 1)
+```
+
+**Note: Should we mention there are `r length(sub$salary)` CEOs with an advanced degree but no college degree? (Can that be correct?)**
+
+# Key Bivariate Relationships
+
+Aaa
+
+### Relationship 1
+
+Aaa
+```{r}
+```
+
+# Possible Secondary Variables
+
+Aaa
+```{r}
+```
+
+# Potential Confounding Effects
+
+Aaa
+```{r}
+```
+
+
+# Variable Coding Issues and Missing Values
+
+Aaa
+```{r}
+```
+
+# Conclusion
+
+Aaa
+```{r}
+```
+
