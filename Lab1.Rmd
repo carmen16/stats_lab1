@@ -12,7 +12,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-Salary is our outcome variable, and profits and mktval are the key measures of market performance.
+This report will analyze several factors that affect CEO salaries, and in particular the relationship between CEO salary and company performance. We have collected data on a sample of 185 CEOs in 1990, and will perform an exploratory analysis of this data in the sections that follow. However, we will also note any features that would be relevant to statistical modeling.  
+
+Since our primary goal is to determine the relationship between CEO salary and company performance, we have divided our variables into the following categories: 
+
+  + Outcome (dependent) variable: Salary
+  + Key predictor (independent) variables: Profits, Mktval
+  + Secondary predictor (independent) variables: Age, Education Level (college & grad), Tenure (ceoten & comten)
+
+As you read this report, keep the following caveats in mind:  
+
+1. This analysis is not causal. We will be able to show a positive relationship between CEO salary and company performance, but we are not able to say that good company performance *causes* high CEO salaries. Causation could go in the opposite direction, or there could be some third factor that drives both CEO salary and company performance (for example, an economic boom).
+2. Our Salary variable is a measure of direct compensation through salary and bonuses. We do not have data on other forms of compensation, such as stock options.
+3. There are some additional variables that may affect CEO salary, that we are unable to account for. These include, but are not limited to, industry, location, gender, and race.  
 
 ```{r}
 setwd("~/Desktop/MIDS/Statistics/stats_lab1")
@@ -22,7 +34,7 @@ ceo.df <- ceo.env[["CEO"]]
 
 # Univariate Analysis of Key Variables
 
-In this section we will analyze each variable individually.
+In this section we will analyze each variable individually and note some of their key features.
 
 ### Salary
 
@@ -48,9 +60,10 @@ hist(ceo.df$age, breaks = 14, main = "Histogram of CEO Age", xlab = "Age")
 summary(ceo.df$age)
 ```
 
-The variance of Age is large:
+The variance and standard deviation of Age are large:
 ```{r}
 var(ceo.df$age)
+sd(ceo.df$age)
 ```
 
 ### College Degree
@@ -74,7 +87,7 @@ pct.grad <- (sum(ceo.df$grad) / length(ceo.df$grad))
 `r round(pct.grad * 100, 1)`% of the CEOs in this dataset hold advanced degrees.
 
 ### Years With Company
-The Median (`r round(median(ceo.df$comten), 1)`) and Mean (`r round(mean(ceo.df$comten), 1)`) both indicate that in general CEOs have been with their companies around 21 years. However, the data is highly variable with a min of `r round(min(ceo.df$comten), 1)` and a max of `r round(max(ceo.df$comten), 1)`.
+The Median (`r median(ceo.df$comten)`) and Mean (`r round(mean(ceo.df$comten), 1)`) both indicate that in general CEOs have been with their companies around 21 years. However, the data is highly variable with a minimum of `r min(ceo.df$comten)` and a maximum of `r max(ceo.df$comten)` years.
 ```{r}
 summary(ceo.df$comten)
 ```
@@ -84,7 +97,7 @@ Variance of Years with Company
 var(ceo.df$comten)
 ```
 
-The standard deviation for years with the company is ~r round(sd(ceo.df$comten), 1), which is large but unsurprising given the variablity of the dataset.
+The standard deviation for years with the company is ~`r round(sd(ceo.df$comten), 1)`, which is large but unsurprising given the variablity of this variable.
 ```{r}
 sd(ceo.df$comten)
 ```
@@ -95,7 +108,7 @@ hist(ceo.df$comten, main="Years with Company", xlab = "Years")
 ```
 
 ### Years as CEO
-The years as CEO variable exhibits a large right skew with a median of around `r round(median(ceo.df$comten), 1)`. This is not entirely suprising given CEOs tend to be established in their careers and thus older, which may explain while things tail off. We must also wonder if there is a large turnover in the first few years of a CEOs tenure as most CEOs are between 0-5 years in the position.
+The years as CEO variable exhibits a large right skew with a median of `r median(ceo.df$ceoten)` years. This skew is not entirely suprising given CEOs tend to be established in their careers and thus older, which may explain while things tail off. We must also wonder if there is a large turnover in the first few years of a CEOs tenure since half of CEOs have spent 0-5 years in their position.
 
 Summary Statistics for Years as CEO
 ```{r}
@@ -118,13 +131,13 @@ hist(ceo.df$ceoten, main="Years as CEO", xlab = "Years")
 ```
 
 ### Profits
-Companies in the sample tend to make a profit as shown by the median profit of `r round(mean(ceo.df$comten), 1)`. The mean is significanlty higher than the median driven by a notable outlier of `r round(max(ceo.df$comten), 1)`. While profits can be either positibe or negative, we found `r sum(ceo.df$profits == -1)` datapoints that are equal to negtive 1. Given this same value is found for the same CEOs in the market value variable, we beleive this is a bad value.
+Companies in the sample tend to make a profit as shown by the median profit of $`r median(ceo.df$profit)` million. The mean is significantly higher than the median, driven by a notable outlier of $`r round(max(ceo.df$profits) / 1000, 1)` billion. While profits can be either positibe or negative, we found `r sum(ceo.df$profits == -1)` datapoints that are equal to negtive 1. Given that CEOs with this profit value also have a market value of -1, we believe this is a bad value.  
+*Does "bad value" mean poor company performance or a coding error? Same question for the market value section*
 
 Summary Statistics for Profits
 ```{r}
 summary(ceo.df$profits)
 ```
-
 
 Variance of Profits
 ```{r}
@@ -139,12 +152,13 @@ sd(ceo.df$profits)
 Histogram of Profits
 ```{r}
 hist(ceo.df$profits, main="1990 Profits",
-     xlab = "millions", breaks = 100)
+     xlab = "$ millions", breaks = 100)
 ```
 
 ### Market Value
 
-Unsurprisingly, the Market Value for companies has a right skew. The Min `r round(min(ceo.df$mktval), 1)` looks to be in error as Market Values should range from 0 to infinity. We found `r sum(ceo.df$mktval == -1)` datapoints that are equal to negtive 1, which appears to be a bad value.
+Unsurprisingly, the Market Value for companies has a right skew, similar to Profits. While the median value is $`r round(median(ceo.df$mktval) / 1000, 1)` billion, there are 2 outliers above $40 billion. The minimum of `r min(ceo.df$mktval)` looks to be an error, as Market Values should range from 0 to infinity. We found `r sum(ceo.df$mktval == -1)` datapoints that are equal to negative 1, which appears to be a bad value.
+*Does "bad value" mean poor company performance or a coding error? Same question for the profits section*
 
 Summary Statistics for Market Value
 ```{r}
@@ -163,13 +177,14 @@ sd(ceo.df$mktval)
 
 Histogram of Market Value
 ```{r}
-hist(ceo.df$mktval, main="Market Value at the End of 1990",
-     xlab = "millions", breaks = 100)
+hist(ceo.df$mktval, main = "Market Value at the End of 1990",
+     xlab = "$ millions", breaks = 100)
+axis(1, at = seq(-10000, 50000, by = 10000))
 ```
 
 # Key Bivariate Relationships
 
-In this section we analyze some key bivariate relationships. Below is a scatterplot matrix of these key variables.
+In this section we analyze some key bivariate relationships. Recall from the introduction that we defined our key variables are Salary, Profits, and Market Value. Below is a scatterplot matrix of these key variables.
 
 ```{r}
 library(car)
@@ -184,7 +199,7 @@ These are our two measures of company performance, so we confirm they are positi
 cor(ceo.df$profits, ceo.df$mktval)
 ```
 
-For the most part, as profits increase, so does market value.
+For the most part, as profits increase, so does market value. The relationship appears to hold as long as profits are nonnegative, since market value cannot go below zero.
 
 ```{r}
 plot(ceo.df$profits, ceo.df$mktval,
@@ -195,50 +210,65 @@ abline(lm(ceo.df$mktval ~ ceo.df$profits), col = "red")
 ```
 
 ### Profits & CEO Salary
-Salary and Profits don't have a strong linear relationship as demonstrated by the low correlation.
+
+Salary and Profits have a weak linear relationship as demonstrated by their low correlation.
+
 ```{r}
 cor(ceo.df$salary, ceo.df$profits)
 ```
 
+Most of the data is concentrated in the aread where profits are between 0 and $500 million, and salary is less than $2 million. However, there are many outlier CEOs, who significantly outperformed their peers by making high profits per dollar earned, which suggests this relationship is not linear.
 
-When profits are between -500 million dollars and 500 million dollars and salary is less than 2 million dollars, there seems to be a slight linear relationship. However, outlier CEOs, who significantly outperformed their peers by making significant profits per dollar earned, skew the linearity of the data.
 ```{r}
-plot(ceo.df$salary, ceo.df$profits,
+plot(ceo.df$profits, ceo.df$salary,
      main = "Salary vs. Profits in 1990",
-     xlab = "Salary ($ thousands)",
-     ylab = "Profits ($ millions)")
+     xlab = "Profits ($ millions)",
+     ylab = "Salary ($ thousands)")
+abline(lm(ceo.df$salary ~ ceo.df$profits), col = "red")
 ```
 
-However, after performing a logorithmic transformation on the profits variable, the variables show more a linear relationship.   
+However, after performing a logarithmic transformation on the profits variable, the variables show a highly linear relationship. The only pitfall with this transformation is that it forces us to drop CEOs at companies with negative profits (this is the reason for the "NaNs produced" warning seen below).
+
 ```{r}
-plot(ceo.df$salary, log(ceo.df$profits),
+plot(log(ceo.df$profits), ceo.df$salary,
      main = "Salary vs. Profits in 1990",
-     xlab = "Salary ($ thousands)",
-     ylab = "Log of Profits ($ millions)")
+     xlab = "Log of Profits ($ millions)",
+     ylab = "Salary ($ thousands)")
+abline(lm(ceo.df$salary ~ log(ceo.df$profits)), col = "red")
 ```
 
 ### Market Value & CEO Salary
-Like the relationship between salary and profits, salary and market value also don't have a strong linear relationship, which can be seen in the correlation below. Given the high correlation between profits and market value, it is thus unsurprising that salary and market value are also not highly correlated.
+
+Like the relationship between salary and profits, salary and market value also don't have a strong linear relationship, which can be seen in the correlation below. Given the high correlation between profits and market value, it is unsurprising that salary and market value are also not highly correlated.
+
 ```{r}
 cor(ceo.df$salary, ceo.df$mktval)
 ```
 
-Similar to salary and profits, there appears to be some linearity when profits and market value are low, but as market value rises the linear reltionship weakens.
+Similar to salary and profits, the data is highly clustered in the area of the graph where market values are below $10 billion and CEO salaries are below $2 million. However, the large number of CEOs that fan out around this cluster suggests that this relationship is not linear.
+
 ```{r}
-plot(ceo.df$salary, ceo.df$mktval,
+plot(ceo.df$mktval, ceo.df$salary,
      main = "Salary vs. Market Value in 1990",
-     xlab = "Salary ($ thousands)",
-     ylab = "Market Value ($ millions)")
+     xlab = "Market Value ($ millions)",
+     ylab = "Salary ($ thousands)")
+abline(lm(ceo.df$salary ~ ceo.df$mktval), col = "red")
 ```
 
-Similar to the profit variable, a logorthmic transformation on the market value variable demonstrates a more linear relationship between the two variables.
+As with the profit variable, a logarithmic transformation on the market value variable reveals a more linear relationship with salary. Again, we encounter the "NaNs produced" warning because we have been forced to drop CEOs with a negative market value. However, we feel that this does not affect the integrity of the relationship between salary and log(market value) because market value should have a lower bound of zero, and we believe these negative values are coding errors (see the section on coding issues and missing values).
+
+*Is this true - do we believe the -1 is a coding error*
+
 ```{r}
-plot(ceo.df$salary, log(ceo.df$mktval),
+plot(log(ceo.df$mktval), ceo.df$salary,
      main = "Salary vs. Market Value in 1990",
-     xlab = "Salary ($ thousands)",
-     ylab = "Market Value ($ millions)")
+     xlab = "Log of Market Value ($ millions)",
+     ylab = "Salary ($ thousands)")
+abline(lm(ceo.df$salary ~ log(ceo.df$mktval)), col = "red")
 ```
+
 # Possible Secondary Variables
+
 Some secondary variables that may affect salary are the CEO's age, tenure, and education level. Below is a scatterplot of salary on age and tenure variables. Since education level is split into two dummy variables, we do not find a scatterplot of it to be useful.
 
 ```{r}
@@ -246,7 +276,7 @@ scatterplotMatrix(~ salary + age + comten + ceoten, data = ceo.df)
 ```
 
 ### Salary vs. Age
-Age has a slight positive relationship with CEO salary, likely because older CEOs have more work experience. However, with a correlation of only `r cor(ceo.df$salary, ceo.df$age)`, age is not a key variable in this analysis.
+Age has a slight positive relationship with CEO salary, likely because older CEOs have more work experience. However, with a correlation of only `r cor(ceo.df$salary, ceo.df$age)`, age is not a particularly important variable in this analysis.
 
 ```{r}
 plot(ceo.df$age, ceo.df$salary,
@@ -273,7 +303,7 @@ ceo.df$educLevel <- mapply(educLevelFunc, ceo.df$college, ceo.df$grad)
 table(ceo.df$educLevel)
 ```
 
-Following is a boxplot of CEO salary by education level. The distribution category for the "less than college" category is not reliable since it only has 5 data points. However, we can see that CEOs with an advanced degree have approximately the same salary distribution as CEOs with only a college degree.
+Following is a boxplot of CEO salary by education level. The distribution for the "less than college" category is not reliable since it is based on only 5 data points. However, we can see that CEOs with an advanced degree have approximately the same salary distribution as CEOs with only a college degree.
 
 ```{r}
 boxplot(salary ~ educLevel, data=ceo.df,
@@ -292,7 +322,7 @@ pct.outside.ceo <- (length(outside.ceo$ceoten) / length(ceo.df$ceoten))
 
 (*Note:* In this dataset, `r round(pct.outside.ceo * 100, 1)`% of CEOs are brought in from outside the company.)  
 
-As shown in the scatterplots below, CEO salary has essentially no relationship with the number of years the CEO has been with the company, and only a slight positive relationship with the number of years as CEO.
+As shown in the scatterplots below, CEO salary has essentially no relationship with the number of years the CEO has been with the company, and only a very slight positive relationship with the number of years as CEO.
 
 ```{r}
 cor(ceo.df$salary, ceo.df$comten)
