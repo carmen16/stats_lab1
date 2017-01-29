@@ -41,8 +41,9 @@ In this section we will analyze each variable individually and note some of thei
 CEO salary distribution is strongly skewed right.
 
 ```{r}
-hist(ceo.df$salary, main = "Histogram of CEO Salary in 1990",
-     xlab = "Salary in $ thousands", breaks = seq(0, 6000, by = 500))
+hist(ceo.df$salary, breaks = seq(0, 6000, by = 500),
+     main = "Histogram of CEO Salary in 1990",
+     xlab = "Salary ($ thousands)")
 axis(1, at = seq(0, 6000, by = 1000))
 ```
 
@@ -56,11 +57,14 @@ summary(ceo.df$salary)
 
 CEO age peaks between 50 and 65 years old, but ranges all the way from `r min(ceo.df$age)` to `r max(ceo.df$age)`.
 ```{r}
-hist(ceo.df$age, breaks = 14, main = "Histogram of CEO Age", xlab = "Age")
+hist(ceo.df$age, breaks = 14,
+     main = "Histogram of CEO Age",
+     xlab = "Age")
 summary(ceo.df$age)
 ```
 
 The variance and standard deviation of Age are large:
+
 ```{r}
 var(ceo.df$age)
 sd(ceo.df$age)
@@ -86,48 +90,56 @@ pct.grad <- (sum(ceo.df$grad) / length(ceo.df$grad))
 
 `r round(pct.grad * 100, 1)`% of the CEOs in this dataset hold advanced degrees.
 
-### Years With Company
+### Years with Company
 The Median (`r median(ceo.df$comten)`) and Mean (`r round(mean(ceo.df$comten), 1)`) both indicate that in general CEOs have been with their companies around 21 years. However, the data is highly variable with a minimum of `r min(ceo.df$comten)` and a maximum of `r max(ceo.df$comten)` years.
+
 ```{r}
 summary(ceo.df$comten)
 ```
 
 Variance of Years with Company
+
 ```{r}
 var(ceo.df$comten)
 ```
 
 The standard deviation for years with the company is ~`r round(sd(ceo.df$comten), 1)`, which is large but unsurprising given the variablity of this variable.
+
 ```{r}
 sd(ceo.df$comten)
 ```
 
 Histogram of Years with Company
+
 ```{r}
-hist(ceo.df$comten, main="Years with Company", xlab = "Years")
+hist(ceo.df$comten, main = "Years with Company", xlab = "Years")
 ```
 
 ### Years as CEO
 The years as CEO variable exhibits a large right skew with a median of `r median(ceo.df$ceoten)` years. This skew is not entirely suprising given CEOs tend to be established in their careers and thus older, which may explain while things tail off. We must also wonder if there is a large turnover in the first few years of a CEOs tenure since half of CEOs have spent 0-5 years in their position.
 
 Summary Statistics for Years as CEO
+
 ```{r}
 summary(ceo.df$ceoten)
 ```
 
 Variance of Years as CEO
+
 ```{r}
 var(ceo.df$ceoten)
 ```
 
 Standard Deviation of Years as CEO
+
 ```{r}
 sd(ceo.df$ceoten)
 ```
 
 Histogram of Years as CEO
+
 ```{r}
-hist(ceo.df$ceoten, main="Years as CEO", xlab = "Years")
+hist(ceo.df$ceoten, main = "Years as CEO", xlab = "Years")
 ```
 
 ### Profits
@@ -135,23 +147,27 @@ Companies in the sample tend to make a profit as shown by the median profit of $
 *Does "bad value" mean poor company performance or a coding error? Same question for the market value section*
 
 Summary Statistics for Profits
+
 ```{r}
 summary(ceo.df$profits)
 ```
 
 Variance of Profits
+
 ```{r}
 var(ceo.df$profits)
 ```
 
 Standard Deviation of Profits
+
 ```{r}
 sd(ceo.df$profits)
 ```
 
 Histogram of Profits
+
 ```{r}
-hist(ceo.df$profits, main="1990 Profits",
+hist(ceo.df$profits, main = "1990 Profits",
      xlab = "$ millions", breaks = 100)
 ```
 
@@ -161,21 +177,25 @@ Unsurprisingly, the Market Value for companies has a right skew, similar to Prof
 *Does "bad value" mean poor company performance or a coding error? Same question for the profits section*
 
 Summary Statistics for Market Value
+
 ```{r}
 summary(ceo.df$mktval)
 ```
 
 Variance of Market Value
+
 ```{r}
 var(ceo.df$mktval)
 ```
 
 Standard Deviation of Market Value
+
 ```{r}
 sd(ceo.df$mktval)
 ```
 
 Histogram of Market Value
+
 ```{r}
 hist(ceo.df$mktval, main = "Market Value at the End of 1990",
      xlab = "$ millions", breaks = 100)
@@ -349,10 +369,36 @@ Aaa
 
 # Variable Coding Issues and Missing Values
 
-*Mention 2 CEOs with advanced degree but not college degree*  
-*Mention 1 CEO with CEO tenure > company tenure*  
-*Mention 5 Companies with market cap equal to -1*  
+### Coding Issue: Education
+
+There are 2 CEOs who have an advanced degree, but no college degree. This seems odd, but we have no way to know if this is a coding error, and if so, what the true values should be. Given that education is not a particularly important variable in this analysis, we have taken the route of assigning these two CEOs to the "advanced degree" category in our analysis of education. The table below shows the CEOs with this issue.
 ```{r}
+educ.issue <- subset(ceo.df, ceo.df$college == 0 & ceo.df$grad == 1)
+educ.issue
+```
+
+*Are these 2 CEOs the same person???? They are strangely similar*
+
+### Coding Issue: Tenure
+
+*1 CEO with CEO tenure > company tenure*
+
+The table below shows the CEO with this issue.
+
+```{r}
+tenure.issue <- subset(ceo.df, ceo.df$ceoten > ceo.df$comten)
+tenure.issue
+```
+
+### Missing Values: Company Performance
+
+*5 Companies with market cap & profit equal to -1*
+
+The table below shows the CEOs with missing values for profits and market value.
+
+```{r}
+performance.msgval <- subset(ceo.df, ceo.df$profits == -1 | ceo.df$mktval == -1)
+performance.msgval
 ```
 
 # Conclusion
